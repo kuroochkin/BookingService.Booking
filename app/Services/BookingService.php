@@ -54,6 +54,6 @@ final class BookingService
         $accommodationId = $request->input('accommodation_id');
         $booking = $this->bookingRepository->getBookingByTenantAndAccommodationId($tenantId, $accommodationId);
 
-        return $this->bookingRepository->delete($booking);
+        return $this->bookingRepository->delete($booking, $request);
     }
 }

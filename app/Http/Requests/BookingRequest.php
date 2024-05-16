@@ -38,6 +38,18 @@ class BookingRequest extends FormRequest
 
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {
+        $messages = $validator->errors()->messages();
+
+        if (isset($messages['tenant_id'])) {
+            dd('Такого жителя не существует!');
+        }
+        if (isset($messages['start_date'])) {
+            dd('Вы указали слишком раннюю дату начала бронирования!');
+        }
+        if (isset($messages['end_date'])) {
+            dd('Вы указали слишком раннюю дату окончания бронирования!');
+        }
+
         throw new HttpResponseException(response()->json($validator->errors(), 422));
     }
 }

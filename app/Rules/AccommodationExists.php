@@ -17,7 +17,7 @@ class AccommodationExists implements ValidationRule
         ]);
 
         if (isset(json_decode($response->getBody())->error)) {
-            dd('Такой комнаты не существует! Пожалуйста, забронируйте другую.');
+            dd('Такой комнаты не существует!');
         }
     }
 }

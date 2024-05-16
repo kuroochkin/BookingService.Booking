@@ -8,6 +8,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class AccommodationBelongsToLandlord implements ValidationRule
 {
+    public function __construct(private readonly string $landlordId) {}
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $client = new Client(['base_uri' => 'http://accommodation-service.loc']);
@@ -18,7 +19,7 @@ class AccommodationBelongsToLandlord implements ValidationRule
 
         $landlord = json_decode(json_decode($response->getBody(), true));
 
-        if ((int)$value !== $landlord->accommodation_id) {
+        if ($this->landlordId !== $landlord->id) {
             $fail('Вы не имеете право обновлять эту комнату!');
         }
     }

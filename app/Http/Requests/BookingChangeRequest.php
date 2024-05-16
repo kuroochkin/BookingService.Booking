@@ -17,11 +17,16 @@ class BookingChangeRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'landlord_id' => [
+                'required',
+                'string',
+                new LandlordExists(),
+            ],
             'accommodation_id' => [
                 'required',
-                'int',
+                'string',
                 new AccommodationExists(),
-                new AccommodationBelongsToLandlord(),
+                new AccommodationBelongsToLandlord($this->input('landlord_id')),
             ],
 
             'tenant_id' => [
@@ -30,5 +35,16 @@ class BookingChangeRequest extends FormRequest
                 'exists:bookings,tenant_id',
             ],
         ];
+    }
+
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        $messages = $validator->errors()->messages();
+
+        if (isset($messages['tenant_id'])) {
+            dd('Такой житель не бронировал комнату!');
+        }
+
+        throw new HttpResponseException(response()->json($validator->errors(), 422));
     }
 }
